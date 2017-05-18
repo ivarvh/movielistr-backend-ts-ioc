@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A program to keep a diary of movies you watched.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts",
     "build": "webpack --config ./webpack/dev.webpack.config.js"
   },
   "keywords": [
@@ -15,20 +15,26 @@
   "author": "Ivar van Hartingsveldt",
   "license": "ISC",
   "devDependencies": {
+    "@types/big-integer": "^0.0.30",
+    "@types/chai": "^3.5.2",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^7.0.18",
+    "@types/koa": "^2.0.39",
+    "@types/koa-bodyparser": "^3.0.23",
+    "@types/koa-router": "^7.0.22",
+    "chai": "^3.5.0",
+    "mocha": "^3.4.1",
     "source-map-loader": "^0.2.1",
     "ts-loader": "^2.0.3",
+    "ts-node": "^3.0.4",
     "typescript": "^2.3.2",
     "webpack": "^2.5.1"
   },
   "dependencies": {
-    "@types/koa": "^2.0.39",
-    "@types/koa-bodyparser": "^3.0.23",
-    "@types/koa-router": "^7.0.22",
+    "big-integer": "^1.6.22",
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.1.1",
-    "nano-time": "^1.0.0",
-    "typescript-ioc": "^0.4.1",
-    "uuid": "^3.0.1"
+    "typescript-ioc": "^0.4.1"
   }
 }

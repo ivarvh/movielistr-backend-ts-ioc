@@ -1,4 +1,4 @@
-import { generateUniqueId } from './../utils/IDUtils';
+import IDUtils from './../utils/IDUtils';
 import { Inject, Singleton } from 'typescript-ioc';
 import DirectorService from "./DirectorService";
 import Movie from "../models/Movie";
@@ -6,15 +6,17 @@ import Movie from "../models/Movie";
 @Singleton
 export default class MovieService {
 
-    @Inject
-    private directorService: DirectorService;
+    constructor(
+        @Inject private directorService: DirectorService,
+        @Inject private idUtils: IDUtils
+    ) { }
 
     private movies: Array<Movie> = [];
 
     public addMovie(title: string, duration: number, releaseYear: number, directorId: string): Movie {
         const director = this.directorService.findById(directorId);
         const newMovie = Movie.newMovie(
-            generateUniqueId(), title, releaseYear, duration, director
+            this.idUtils.generateUniqueId(), title, releaseYear, duration, director
         );
 
         this.movies.push(newMovie);

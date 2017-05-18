@@ -1,20 +1,19 @@
-import { generateUniqueId } from './../utils/IDUtils';
-import { Singleton } from 'typescript-ioc';
+import IDUtils from './../utils/IDUtils';
+import { Singleton, Inject } from 'typescript-ioc';
 
 import Director from "../models/Director";
 
 @Singleton
 export default class DirectorService {
 
-    private directors: Array<Director> = [
-        Director.newDirector(generateUniqueId(), "Robert", "Rodriguez", 1968),
-        Director.newDirector(generateUniqueId(), "Quentin", "Tarantino", 1963),
-        Director.newDirector(generateUniqueId(), "John", "Lasseter", 1957),
-        Director.newDirector(generateUniqueId(), "Toby", "Hooper", 1943)
-    ];
+    constructor( @Inject private idUtils: IDUtils) { }
 
-    constructor() {
-    }
+    private directors: Array<Director> = [
+        Director.newDirector(this.idUtils.generateUniqueId(), "Robert", "Rodriguez", 1968),
+        Director.newDirector(this.idUtils.generateUniqueId(), "Quentin", "Tarantino", 1963),
+        Director.newDirector(this.idUtils.generateUniqueId(), "John", "Lasseter", 1957),
+        Director.newDirector(this.idUtils.generateUniqueId(), "Toby", "Hooper", 1943)
+    ];
 
     public findById(id: string): Director {
         const result = this.directors.find(director => director.$id === id);
@@ -24,7 +23,21 @@ export default class DirectorService {
         return result;
     }
 
-    public findAll() {
+    public findAll(): Array<Director> {
         return this.directors;
+    }
+
+    public addDirector(firstName: string, lastName: string, birthYear: number) {
+        const newDirector = Director.newDirector(this.idUtils.generateUniqueId(), firstName, lastName, birthYear);
+        this.directors.push(newDirector);
+        return newDirector;
+    }
+
+    public updateDirector(id: string, firstName: string, lastName: string, birthYear: number) {
+        const currentValue: Director = this.findById(id);
+        currentValue.$firstName = firstName;
+        currentValue.$lastName = lastName;
+        currentValue.$birthYear = birthYear;
+        return currentValue;
     }
 }
