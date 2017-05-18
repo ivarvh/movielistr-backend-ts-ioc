@@ -1,11 +1,11 @@
 export default class Director {
 
-    private id: number;
+    private id: string;
     private firstName: string;
     private lastName: string;
     private birthYear: number;
 
-    public static newDirector(id: number, firstName: string, lastName: string, birthYear: number) {
+    public static newDirector(id: string, firstName: string, lastName: string, birthYear: number) {
         const newDirector = new Director();
         newDirector.id = id;
         newDirector.firstName = firstName;
@@ -14,7 +14,7 @@ export default class Director {
         return newDirector;
     }
 
-    public get $id(): number {
+    public get $id(): string {
         return this.id;
     }
 
@@ -41,4 +41,6 @@ export default class Director {
     public set $birthYear(value: number) {
         this.birthYear = value;
     }
+
+
 }

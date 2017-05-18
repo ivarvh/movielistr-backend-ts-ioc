@@ -3,7 +3,7 @@ import MovieService from "../services/MovieService";
 import { IRouterContext, IMiddleware } from 'koa-router';
 import { Context } from 'koa';
 
-type MovieRequest = { title: string, duration: number, releaseYear: number, directorId: number };
+type MovieRequest = { title: string, duration: number, releaseYear: number, directorId: string };
 
 @Singleton
 export default class MovieController {

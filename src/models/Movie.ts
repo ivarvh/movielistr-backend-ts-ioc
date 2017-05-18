@@ -2,15 +2,17 @@ import Director from "./Director";
 
 export default class Movie {
 
-    private id: number;
+    private id: string;
     private title: string;
     private releaseYear: number;
     private duration: number;
+    private rating: number = 0;
+    private seen: boolean = false;
     private director: Director;
 
     constructor() { }
 
-    public static newMovie(id: number, title: string, releaseYear: number, duration: number, director: Director) {
+    public static newMovie(id: string, title: string, releaseYear: number, duration: number, director: Director) {
         const movie = new Movie();
         movie.id = id;
         movie.title = title;
@@ -20,7 +22,7 @@ export default class Movie {
         return movie;
     }
 
-    public get $id(): number {
+    public get $id(): string {
         return this.id;
     }
 

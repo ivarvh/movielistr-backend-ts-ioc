@@ -1,3 +1,4 @@
+import { generateUniqueId } from './../utils/IDUtils';
 import { Inject, Singleton } from 'typescript-ioc';
 import DirectorService from "./DirectorService";
 import Movie from "../models/Movie";
@@ -10,10 +11,10 @@ export default class MovieService {
 
     private movies: Array<Movie> = [];
 
-    public addMovie(title: string, duration: number, releaseYear: number, directorId: number): Movie {
+    public addMovie(title: string, duration: number, releaseYear: number, directorId: string): Movie {
         const director = this.directorService.findById(directorId);
         const newMovie = Movie.newMovie(
-            this.movies.length + 1, title, releaseYear, duration, director
+            generateUniqueId(), title, releaseYear, duration, director
         );
 
         this.movies.push(newMovie);
@@ -21,7 +22,7 @@ export default class MovieService {
         return newMovie;
     }
 
-    public findById(id: number): Movie {
+    public findById(id: string): Movie {
         const movie = this.movies.find(movie => movie.$id === id);
         if (!movie) {
             throw new Error("No movie found with ID");
