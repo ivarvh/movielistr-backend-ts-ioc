@@ -12,13 +12,15 @@ export default class Movie {
 
     constructor() { }
 
-    public static newMovie(id: string, title: string, releaseYear: number, duration: number, director: Director) {
+    public static newMovie(id: string, title: string, releaseYear: number, duration: number, director: Director, rating: number, seen: boolean) {
         const movie = new Movie();
         movie.id = id;
         movie.title = title;
         movie.releaseYear = releaseYear;
         movie.duration = duration;
         movie.director = director;
+        movie.rating = rating;
+        movie.seen = seen;
         return movie;
     }
 
@@ -56,5 +58,21 @@ export default class Movie {
 
     public set $director(value: Director) {
         this.director = value;
+    }
+
+    public get $rating(): number {
+        return this.rating;
+    }
+
+    public set $rating(value: number) {
+        this.rating = value;
+    }
+
+    public get $seen(): boolean {
+        return this.seen;
+    }
+
+    public set $seen(value: boolean) {
+        this.seen = value;
     }
 }
