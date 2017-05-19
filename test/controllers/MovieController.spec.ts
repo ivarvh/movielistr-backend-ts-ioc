@@ -47,6 +47,20 @@ describe("MovieController", () => {
             findByIdMock.verify();
             expect(ctx.body).to.equal(movie);
         });
+
+        it("return with a 404 if no movie is found", () => {
+            const ctx: Context = {throw: () => null} as Context;
+            const id = "someId";
+            ctx.params = {id};
+            const errorMessage = "No movie found with ID.";
+            const ctxMock = sinon.mock(ctx);
+            ctxMock.expects("throw").calledWithExactly(404, errorMessage);
+            movieService.findById = () => {
+                throw new Error(errorMessage);
+            };
+            controllerUnderTest.findMovieById(ctx, nextFunction);
+            ctxMock.verify();
+        });
     });
 
     describe("addMovie", () => {

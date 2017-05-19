@@ -22,7 +22,11 @@ export default class MovieController {
     }
 
     public findMovieById: IMiddleware = (ctx: Context) => {
-        ctx.body = this.movieService.findById(ctx.params.id);
+        try {
+            ctx.body = this.movieService.findById(ctx.params.id);
+        } catch (e) {
+            ctx.throw(404, "No movie found with this ID.");
+        }
     }
 
     public addMovie: IMiddleware = (ctx: Context) => {
