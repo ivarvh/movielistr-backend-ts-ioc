@@ -12,3 +12,15 @@ export const createListOfRandomMovies = (size: number): Movie[] => {
     }
     return result;
 };
+
+export const createRandomMovieRequestObject = () => {
+    const movie: Movie = createRandomMovie();
+    return {
+        directorId: movie.$director.$id,
+        duration: movie.$duration,
+        rating: movie.$rating,
+        releaseYear: movie.$releaseYear,
+        seen: movie.$seen,
+        title: movie.$title,
+    };
+};

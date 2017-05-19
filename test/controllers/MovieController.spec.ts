@@ -3,14 +3,14 @@ import { Context } from "koa";
 import { IRouterContext } from "koa-router";
 import "mocha";
 import * as sinon from "sinon";
-import {Mock} from "typemoq";
+import Mox from "ts-mox";
 import MovieController from "../../src/controllers/MovieController";
 import Director from "../../src/models/Director";
 import Movie from "../../src/models/Movie";
 import DirectorService from "../../src/services/DirectorService";
 import MovieService from "../../src/services/MovieService";
 import IDUtils from "../../src/utils/IDUtils";
-import { createListOfRandomMovies, createRandomMovie } from "./../testutils/MovieTestBuilder";
+import { createListOfRandomMovies, createRandomMovie, createRandomMovieRequestObject } from "./../testutils/MovieTestBuilder";
 
 describe("MovieController", () => {
 
@@ -19,7 +19,7 @@ describe("MovieController", () => {
     const nextFunction = () => Promise.resolve();
 
     beforeEach(() => {
-        movieService = createMock<MovieService>(MovieService);
+        movieService = Mox.createMock<MovieService>(MovieService);
         controllerUnderTest = new MovieController(movieService);
     });
 
@@ -51,33 +51,28 @@ describe("MovieController", () => {
 
     describe("addMovie", () => {
 
+        it("delegates to movieService and responds with 200", () => {
+            const resultMovie = createRandomMovie();
+            const movieRequestObject = createRandomMovieRequestObject();
+            const movieServiceMock = sinon.mock(movieService);
+            movieServiceMock
+            .expects("addMovie")
+            .returns(resultMovie)
+            .calledWith(
+                movieRequestObject.title,
+                movieRequestObject.duration,
+                movieRequestObject.releaseYear,
+                movieRequestObject.directorId,
+                movieRequestObject.rating,
+                movieRequestObject.seen);
+            const ctx: Context = {request: {}} as Context;
+            ctx.request.body = movieRequestObject;
+            controllerUnderTest.addMovie(ctx, nextFunction);
+            expect(ctx.body).to.equal(resultMovie);
+            movieServiceMock.verify();
+
+        });
+
     });
 
 });
-
-function createMock<T>(clazz: any): T {
-    const mock: any = {};
-    clazz = new clazz();
-    const objProps = props(clazz);
-    for (const member in objProps) {
-        if (typeof clazz[objProps[member]] === "function") {
-            mock[objProps[member]] = () => null;
-        } else {
-            mock[objProps[member]] = null;
-        }
-    }
-    return mock as T;
-}
-
-function props(obj: any): string[] {
-    const p: string[] = [];
-    for (; obj != null; obj = Object.getPrototypeOf(obj)) {
-        const op = Object.getOwnPropertyNames(obj);
-        op.forEach((element) => {
-            if (p.indexOf(element) === -1) {
-                p.push(element);
-            }
-        });
-    }
-    return p;
-}

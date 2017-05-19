@@ -39,11 +39,11 @@ export default class MovieService {
     }
 
     public findById(id: string): Movie {
-        const movie = this.movies.find((movie) => movie.$id === id);
-        if (!movie) {
+        const foundMovie = this.movies.find((movie) => movie.$id === id);
+        if (!foundMovie) {
             throw new Error("No movie found with ID");
         }
-        return movie;
+        return foundMovie;
     }
 
     public findAll(): Movie[] {
