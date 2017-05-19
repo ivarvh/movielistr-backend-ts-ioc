@@ -1,23 +1,23 @@
-import Director from 'src/models/Director';
-import IDUtils from './../utils/IDUtils';
-import { Inject, Singleton } from 'typescript-ioc';
-import DirectorService from "./DirectorService";
+import Director from "src/models/Director";
+import { Inject, Singleton } from "typescript-ioc";
 import Movie from "../models/Movie";
+import IDUtils from "./../utils/IDUtils";
+import DirectorService from "./DirectorService";
 
 @Singleton
 export default class MovieService {
 
+    private movies: Movie[] = [];
+
     constructor(
         @Inject private directorService: DirectorService,
-        @Inject private idUtils: IDUtils
+        @Inject private idUtils: IDUtils,
     ) { }
-
-    private movies: Array<Movie> = [];
 
     public addMovie(title: string, duration: number, releaseYear: number, directorId: string, rating: number, seen: boolean): Movie {
         const director = this.directorService.findById(directorId);
         const newMovie = Movie.newMovie(
-            this.idUtils.generateUniqueId(), title, releaseYear, duration, director, rating, seen
+            this.idUtils.generateUniqueId(), title, releaseYear, duration, director, rating, seen,
         );
 
         this.movies.push(newMovie);
@@ -30,7 +30,7 @@ export default class MovieService {
         currentValue.$title = title;
         currentValue.$duration = duration;
         currentValue.$releaseYear = releaseYear;
-        if (currentValue.$director.$id != directorId) {
+        if (currentValue.$director.$id !== directorId) {
             currentValue.$director = this.directorService.findById(directorId);
         }
         currentValue.$rating = rating;
@@ -39,14 +39,14 @@ export default class MovieService {
     }
 
     public findById(id: string): Movie {
-        const movie = this.movies.find(movie => movie.$id === id);
+        const movie = this.movies.find((movie) => movie.$id === id);
         if (!movie) {
             throw new Error("No movie found with ID");
         }
         return movie;
     }
 
-    public findAll(): Array<Movie> {
+    public findAll(): Movie[] {
         return this.movies;
     }
 

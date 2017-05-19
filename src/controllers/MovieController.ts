@@ -1,30 +1,33 @@
-import { Inject, Singleton } from 'typescript-ioc';
+import { Context } from "koa";
+import { IMiddleware, IRouterContext } from "koa-router";
+import { Inject, Singleton } from "typescript-ioc";
 import MovieService from "../services/MovieService";
-import { IRouterContext, IMiddleware } from 'koa-router';
-import { Context } from 'koa';
 
-type MovieRequest = { title: string, duration: number, releaseYear: number, directorId: string };
+interface IMovieRequest {
+    title: string;
+    duration: number;
+    releaseYear: number;
+    directorId: string;
+    rating: number;
+    seen: boolean;
+}
 
 @Singleton
 export default class MovieController {
 
-    @Inject
-    private movieService: MovieService;
+    constructor( @Inject private movieService: MovieService) { }
 
-    constructor() {
-    }
-
-    public getAllMovies: IMiddleware = (ctx: IRouterContext, next: () => Promise<any>) => {
+    public getAllMovies: IMiddleware = (ctx: Context) => {
         ctx.body = this.movieService.findAll();
     }
 
-    public findMovieById: IMiddleware = (ctx: IRouterContext, next: () => Promise<any>) => {
-        this.movieService.findById(ctx.params.id);
+    public findMovieById: IMiddleware = (ctx: Context) => {
+        ctx.body = this.movieService.findById(ctx.params.id);
     }
 
-    public addMovie: IMiddleware = (ctx: IRouterContext, next: () => Promise<any>) => {
-        const body: MovieRequest = ctx.request.body;
-        const newMovie = this.movieService.addMovie(body.title, body.duration, body.releaseYear, body.directorId);
+    public addMovie: IMiddleware = (ctx: Context) => {
+        const body: IMovieRequest = ctx.request.body;
+        const newMovie = this.movieService.addMovie(body.title, body.duration, body.releaseYear, body.directorId, body.rating, body.seen);
         ctx.body = newMovie;
     }
 }
