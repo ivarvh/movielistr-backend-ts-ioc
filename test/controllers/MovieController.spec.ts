@@ -3,7 +3,7 @@ import { Context } from "koa";
 import { IRouterContext } from "koa-router";
 import "mocha";
 import * as sinon from "sinon";
-import Mox from "ts-mox";
+import {instance, mock, verify, when} from "ts-mockito";
 import MovieController from "../../src/controllers/MovieController";
 import Director from "../../src/models/Director";
 import Movie from "../../src/models/Movie";
@@ -19,17 +19,19 @@ describe("MovieController", () => {
     const nextFunction = () => Promise.resolve();
 
     beforeEach(() => {
-        movieService = Mox.createMock<MovieService>(MovieService);
-        controllerUnderTest = new MovieController(movieService);
+        movieService = mock(MovieService);
+        controllerUnderTest = new MovieController(instance(movieService));
     });
 
     describe("getAllMovies", () => {
 
         it("puts the movies on the body", () => {
             const movies = createListOfRandomMovies(5);
-            movieService.findAll = () => movies;
+            when(movieService.findAll()).thenReturn(movies);
             const ctx: Context = {} as Context;
+
             const value = controllerUnderTest.getAllMovies(ctx, nextFunction);
+
             expect(ctx.body).to.equal(movies);
         });
     });
@@ -41,24 +43,27 @@ describe("MovieController", () => {
             const ctx: Context = {} as Context;
             const id = "someId";
             ctx.params = {id};
-            const findByIdMock = sinon.mock(movieService);
-            findByIdMock.expects("findById").returns(movie);
+            when(movieService.findById(id)).thenReturn(movie);
+
             const value = controllerUnderTest.findMovieById(ctx, nextFunction);
-            findByIdMock.verify();
+
+            verify(movieService.findById(id)).called();
             expect(ctx.body).to.equal(movie);
         });
 
         it("return with a 404 if no movie is found", () => {
-            const ctx: Context = {throw: () => null} as Context;
             const id = "someId";
-            ctx.params = {id};
             const errorMessage = "No movie found with ID.";
+            const ctx: Context = {
+                params: {id},
+                throw: () => null,
+            } as Context;
+            when(movieService.findById(id)).thenThrow(new Error(errorMessage));
             const ctxMock = sinon.mock(ctx);
             ctxMock.expects("throw").calledWithExactly(404, errorMessage);
-            movieService.findById = () => {
-                throw new Error(errorMessage);
-            };
+
             controllerUnderTest.findMovieById(ctx, nextFunction);
+
             ctxMock.verify();
         });
     });
@@ -68,23 +73,20 @@ describe("MovieController", () => {
         it("delegates to movieService and responds with 200", () => {
             const resultMovie = createRandomMovie();
             const movieRequestObject = createRandomMovieRequestObject();
-            const movieServiceMock = sinon.mock(movieService);
-            movieServiceMock
-            .expects("addMovie")
-            .returns(resultMovie)
-            .calledWith(
+            when(movieService.addMovie(
                 movieRequestObject.title,
                 movieRequestObject.duration,
                 movieRequestObject.releaseYear,
                 movieRequestObject.directorId,
                 movieRequestObject.rating,
-                movieRequestObject.seen);
+                movieRequestObject.seen))
+                .thenReturn(resultMovie);
             const ctx: Context = {request: {}} as Context;
             ctx.request.body = movieRequestObject;
-            controllerUnderTest.addMovie(ctx, nextFunction);
-            expect(ctx.body).to.equal(resultMovie);
-            movieServiceMock.verify();
 
+            controllerUnderTest.addMovie(ctx, nextFunction);
+
+            expect(ctx.body).to.equal(resultMovie);
         });
 
     });

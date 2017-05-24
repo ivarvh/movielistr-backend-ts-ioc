@@ -18,7 +18,9 @@ export default class MovieController {
     constructor( @Inject private movieService: MovieService) { }
 
     public getAllMovies: IMiddleware = (ctx: Context) => {
-        ctx.body = this.movieService.findAll();
+        const movies = this.movieService.findAll();
+        console.log(JSON.stringify(movies));
+        ctx.body = movies;
     }
 
     public findMovieById: IMiddleware = (ctx: Context) => {
