@@ -19,7 +19,6 @@ export default class MovieController {
 
     public getAllMovies: IMiddleware = (ctx: Context) => {
         const movies = this.movieService.findAll();
-        console.log(JSON.stringify(movies));
         ctx.body = movies;
     }
 

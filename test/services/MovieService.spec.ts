@@ -2,6 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import * as sinon from "sinon";
 import "sinon-chai";
+import { instance, mock, verify, when } from "ts-mockito";
 
 import Director from "../../src/models/Director";
 import Movie from "../../src/models/Movie";
@@ -16,22 +17,17 @@ describe("MovieService", () => {
 
     const directorId = "uniqueId";
     const director: Director = Director.newDirector(directorId, "John", "Johnson", 1965);
-    let findByIdStub: sinon.SinonStub;
 
     beforeEach(() => {
         const idUtils = new IDUtils();
-        directorService = new DirectorService(idUtils);
-        findByIdStub = sinon.stub(directorService, "findById");
-        findByIdStub.callsFake(() => director);
+        directorService = mock(DirectorService);
+
+        when(directorService.findById(directorId)).thenReturn(director);
 
         serviceUnderTest = new MovieService(
-            directorService,
+            instance(directorService),
             idUtils,
         );
-    });
-
-    afterEach(() => {
-        findByIdStub.restore();
     });
 
     describe("findAll", () => {
@@ -85,7 +81,7 @@ describe("MovieService", () => {
         });
 
         it("should throw an error if an non existing director id is passed", () => {
-            findByIdStub.callsFake(() => { throw new Error("There is no director with this ID"); });
+            when(directorService.findById(directorId)).thenThrow(new Error("There is no director with this ID"));
             expect(() => serviceUnderTest.addMovie("title", 100, 1986, directorId, 5, true)).to.throw("There is no director with this ID");
         });
     });
@@ -106,9 +102,10 @@ describe("MovieService", () => {
         });
 
         it("should throw an error if no director is found for Id", () => {
+            const nonExistentDirectorId = "nonexistantdirectorId";
             const movie = serviceUnderTest.addMovie("title", 100, 1986, directorId, 5, true);
-            findByIdStub.callsFake(() => { throw new Error("There is no director with this ID"); });
-            expect(() => serviceUnderTest.updateMovie(movie.$id, "title", 100, 1986, "nonexistantdirectorId", 5, true)).to.throw("There is no director with this ID");
+            when(directorService.findById(nonExistentDirectorId)).thenThrow(new Error("There is no director with this ID"));
+            expect(() => serviceUnderTest.updateMovie(movie.$id, "title", 100, 1986, nonExistentDirectorId, 5, true)).to.throw("There is no director with this ID");
         });
 
         it("should throw an error if no movie is found for Id", () => {
