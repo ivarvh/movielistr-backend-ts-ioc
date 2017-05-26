@@ -5,7 +5,7 @@ import Director from "./Director";
 export default class Movie {
 
     @PrimaryGeneratedColumn()
-    private id: string;
+    private id: number;
 
     @Column()
     private title: string;
@@ -26,9 +26,8 @@ export default class Movie {
     @JoinColumn()
     private director: Director;
 
-    public static newMovie(id: string, title: string, releaseYear: number, duration: number, director: Director, rating: number, seen: boolean) {
+    public static newMovie(title: string, releaseYear: number, duration: number, director: Director, rating: number, seen: boolean) {
         const movie = new Movie();
-        movie.id = id;
         movie.title = title;
         movie.releaseYear = releaseYear;
         movie.duration = duration;
@@ -38,8 +37,12 @@ export default class Movie {
         return movie;
     }
 
-    public get $id(): string {
+    public get $id(): number {
         return this.id;
+    }
+
+    public set $id(id: number) {
+        this.id = id;
     }
 
     public get $title(): string {

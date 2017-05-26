@@ -3,20 +3,22 @@ import { Context } from "koa";
 import { IRouterContext } from "koa-router";
 import "mocha";
 import * as sinon from "sinon";
-import {instance, mock, verify, when} from "ts-mockito";
+import { instance, mock, verify, when } from "ts-mockito";
 import MovieController from "../../src/controllers/MovieController";
 import Director from "../../src/models/Director";
 import Movie from "../../src/models/Movie";
 import DirectorService from "../../src/services/DirectorService";
 import MovieService from "../../src/services/MovieService";
-import IDUtils from "../../src/utils/IDUtils";
-import { createListOfRandomMovies, createRandomMovie, createRandomMovieRequestObject } from "./../testutils/MovieTestBuilder";
+import MovieTestBuilder from "../testutils/MovieTestBuilder";
 
 describe("MovieController", () => {
 
     let controllerUnderTest: MovieController;
     let movieService: MovieService;
-    const nextFunction = () => Promise.resolve();
+
+    const testId = 80085;
+    const movieWithId: Movie = MovieTestBuilder.newMovie().withDefaultValues().withId(testId).build();
+    const movieWithoutId: Movie = MovieTestBuilder.newMovie().withDefaultValues().build();
 
     beforeEach(() => {
         movieService = mock(MovieService);
@@ -25,12 +27,12 @@ describe("MovieController", () => {
 
     describe("getAllMovies", () => {
 
-        it("puts the movies on the body", () => {
-            const movies = createListOfRandomMovies(5);
-            when(movieService.findAll()).thenReturn(movies);
+        it("puts the movies on the body", async () => {
+            const movies = MovieTestBuilder.createListOfDefaultMovies(5);
+            when(movieService.findAll()).thenReturn(Promise.resolve(movies));
             const ctx: Context = {} as Context;
 
-            const value = controllerUnderTest.getAllMovies(ctx, nextFunction);
+            await controllerUnderTest.getAllMovies(ctx);
 
             expect(ctx.body).to.equal(movies);
         });
@@ -38,55 +40,45 @@ describe("MovieController", () => {
 
     describe("findMovieById", () => {
 
-        it("puts the found the found movie on the body", () => {
-            const movie: Movie = createRandomMovie();
+        it("puts the found the found movie on the body", async () => {
             const ctx: Context = {} as Context;
-            const id = "someId";
-            ctx.params = {id};
-            when(movieService.findById(id)).thenReturn(movie);
+            ctx.params = { id: testId };
+            when(movieService.findById(testId)).thenReturn(Promise.resolve(movieWithId));
 
-            const value = controllerUnderTest.findMovieById(ctx, nextFunction);
+            await controllerUnderTest.findMovieById(ctx);
 
-            verify(movieService.findById(id)).called();
-            expect(ctx.body).to.equal(movie);
+            verify(movieService.findById(testId)).called();
+            expect(ctx.body).to.equal(movieWithId);
         });
 
-        it("return with a 404 if no movie is found", () => {
-            const id = "someId";
+        it("return with a 404 if no movie is found", async () => {
             const errorMessage = "No movie found with ID.";
             const ctx: Context = {
-                params: {id},
+                params: { id: testId },
                 throw: () => null,
             } as Context;
-            when(movieService.findById(id)).thenThrow(new Error(errorMessage));
+            when(movieService.findById(testId)).thenThrow(new Error(errorMessage));
             const ctxMock = sinon.mock(ctx);
             ctxMock.expects("throw").calledWithExactly(404, errorMessage);
 
-            controllerUnderTest.findMovieById(ctx, nextFunction);
+            await controllerUnderTest.findMovieById(ctx);
 
             ctxMock.verify();
         });
     });
 
-    describe("addMovie", () => {
+    describe("saveMovie", () => {
 
-        it("delegates to movieService and responds with 200", () => {
-            const resultMovie = createRandomMovie();
-            const movieRequestObject = createRandomMovieRequestObject();
-            when(movieService.addMovie(
-                movieRequestObject.title,
-                movieRequestObject.duration,
-                movieRequestObject.releaseYear,
-                movieRequestObject.directorId,
-                movieRequestObject.rating,
-                movieRequestObject.seen))
-                .thenReturn(resultMovie);
-            const ctx: Context = {request: {}} as Context;
-            ctx.request.body = movieRequestObject;
+        it("delegates to movieService and responds with 200", async () => {
+            const ctx: Context = { request: {} } as Context;
+            ctx.request.body = movieWithoutId;
 
-            controllerUnderTest.addMovie(ctx, nextFunction);
+            when(movieService.saveMovie(movieWithoutId))
+                .thenReturn(Promise.resolve(movieWithId));
 
-            expect(ctx.body).to.equal(resultMovie);
+            await controllerUnderTest.saveMovie(ctx);
+
+            expect(ctx.body).to.equal(movieWithId);
         });
 
     });

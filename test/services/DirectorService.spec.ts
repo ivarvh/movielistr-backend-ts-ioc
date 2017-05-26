@@ -1,65 +1,64 @@
 import { expect } from "chai";
 import "mocha";
 
+import { instance, mock, verify, when } from "ts-mockito/lib/ts-mockito";
 import Director from "../../src/models/Director";
+import DirectorRepository from "../../src/repositories/DirectorRepository";
 import DirectorService from "../../src/services/DirectorService";
-import IDUtils from "../../src/utils/IDUtils";
+import DirectorTestBuilder from "../testutils/DirectorTestBuilder";
 
 describe("DirectorService", () => {
 
     let serviceUnderTest: DirectorService;
+    let directorRepository: DirectorRepository;
+
+    const testId = 80085;
+    const testDirectorList = DirectorTestBuilder.getListOfDefaultDirectors(5);
+    const testDirectorWithId = DirectorTestBuilder.newDirector().withDefaultValues().withId(testId).build();
+    const testDirectorWithoutId = DirectorTestBuilder.newDirector().withDefaultValues().build();
 
     beforeEach(() => {
+        directorRepository = mock(DirectorRepository);
         serviceUnderTest = new DirectorService(
-            new IDUtils(),
+            instance(directorRepository),
         );
     });
 
     describe("findAll", () => {
 
-        it("should return the 4 dummy directors", () => {
-            const actual = serviceUnderTest.findAll();
-            expect(actual).to.have.length(4);
+        it("should return the 4 dummy directors", async () => {
+            when(directorRepository.getAllDirectors()).thenReturn(Promise.resolve(testDirectorList));
+            const actual = await serviceUnderTest.findAll();
+            expect(actual).to.have.length(5);
         });
     });
 
     describe("findById", () => {
 
-        it("should return the director with given Id if the director exists", () => {
-            const newDirector = serviceUnderTest.addDirector("John", "Johnson", 1985);
-            const actual = serviceUnderTest.findById(newDirector.$id);
-            expect(actual).to.equal(newDirector);
-        });
-
-        it("should throw Error if the given Id does not exist", () => {
-            expect(() => serviceUnderTest.findById("nonexistantId")).to.throw("There is no director with this ID");
-        });
-    });
-
-    describe("addDirector", () => {
-
-        it("should add a director with the given information", () => {
-            const newDirector = serviceUnderTest.addDirector("John", "Johnson", 1985);
-            const actual = serviceUnderTest.findById(newDirector.$id);
-            expect(actual).to.equal(newDirector);
+        it("should return the director with given Id if the director exists", async () => {
+            when(directorRepository.findDirectorById(testId)).thenReturn(Promise.resolve(testDirectorWithId));
+            const actual = await serviceUnderTest.findById(testId);
+            expect(actual).to.equal(testDirectorWithId);
         });
 
     });
 
-    describe("updateDirector", () => {
+    describe("saveDirector", () => {
 
-        it("updates the director with the given Id", () => {
-            const newDirector = serviceUnderTest.addDirector("John", "Johnson", 1985);
-            serviceUnderTest.updateDirector(newDirector.$id, "Mark", "Markson", 1987);
-            const updatedDirector = serviceUnderTest.findById(newDirector.$id);
-            expect(updatedDirector.$id).to.equal(newDirector.$id);
-            expect(updatedDirector.$firstName).to.equal(newDirector.$firstName);
-            expect(updatedDirector.$lastName).to.equal(newDirector.$lastName);
-            expect(updatedDirector.$birthYear).to.equal(newDirector.$birthYear);
+        it("should add a director with the given information", async () => {
+            when(directorRepository.saveDirector(testDirectorWithoutId)).thenReturn(Promise.resolve(testDirectorWithId));
+            const actual = await serviceUnderTest.save(testDirectorWithoutId);
+            expect(actual).to.equal(testDirectorWithId);
         });
 
-        it("should throw Error if the given Id does not exist", () => {
-            expect(() => serviceUnderTest.updateDirector("nonexistantId", "Mark", "Markson", 1965)).to.throw("There is no director with this ID");
+    });
+
+    describe("deleteDirector", () => {
+
+        it("should call the delete on the repository", async () => {
+            when(directorRepository.deleteDirectorWithId(testId)).thenReturn(Promise.resolve());
+            await serviceUnderTest.delete(testId);
+            verify(directorRepository.deleteDirectorWithId(testId)).called();
         });
 
     });

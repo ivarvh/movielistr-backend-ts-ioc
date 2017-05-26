@@ -20,11 +20,7 @@ export default class DirectorService {
         return this.directorRepository.saveDirector(director);
     }
 
-    public async deleteDirector(directorId: number) {
+    public async delete(directorId: number) {
         return this.directorRepository.deleteDirectorWithId(directorId);
-    }
-
-    public getDirectorMessage(): string {
-        return "Climb the highest mountain, spit in the face of God.";
     }
 }

@@ -32,7 +32,7 @@ export default class DirectorController {
 
     public async deleteDirector(ctx: IRouterContext) {
         const directorId = ctx.params.id;
-        await this.directorService.deleteDirector(directorId);
+        await this.directorService.delete(directorId);
         ctx.status = 200;
     }
 }

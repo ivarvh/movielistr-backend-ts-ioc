@@ -1,5 +1,4 @@
-import { Context } from "koa";
-import { IMiddleware, IRouterContext } from "koa-router";
+import { IRouterContext } from "koa-router";
 import { Container, Inject, Singleton } from "typescript-ioc";
 import Movie from "../models/Movie";
 import MovieService from "../services/MovieService";
@@ -9,11 +8,11 @@ export default class MovieController {
 
     constructor( @Inject private movieService: MovieService) { }
 
-    public async getAllMovies(ctx: Context) {
+    public async getAllMovies(ctx: IRouterContext) {
         ctx.body = await this.movieService.findAll();
     }
 
-    public async findMovieById(ctx: Context) {
+    public async findMovieById(ctx: IRouterContext) {
         try {
             ctx.body = await this.movieService.findById(ctx.params.id);
         } catch (e) {
@@ -21,13 +20,13 @@ export default class MovieController {
         }
     }
 
-    public async saveMovie(ctx: Context) {
+    public async saveMovie(ctx: IRouterContext) {
         const movie: Movie = ctx.request.body;
         const result = await this.movieService.saveMovie(movie);
         ctx.body = result;
     }
 
-    public async deleteMovie(ctx: Context) {
+    public async deleteMovie(ctx: IRouterContext) {
         await this.movieService.deleteMovie(ctx.params.id);
         ctx.status = 200;
     }

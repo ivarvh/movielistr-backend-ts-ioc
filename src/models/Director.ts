@@ -16,6 +16,10 @@ export default class Director {
         return this.id;
     }
 
+    public set $id(value: number) {
+        this.id = value;
+    }
+
     public get $firstName(): string {
         return this.firstName;
     }
