@@ -1,13 +1,14 @@
 import * as Koa from "koa";
 import * as bodyParser from "koa-bodyparser";
 import * as Router from "koa-router";
+import "reflect-metadata";
 
 import { createConnection } from "typeorm";
 import Route from "./models/Route";
 import directorRoutes from "./routes/DirectorRoutes";
 import movieRoutes from "./routes/MovieRoutes";
 
-createConnection().then((connection) => {
+createConnection().then(async (connection) => {
 
     const app = new Koa();
     const router = new Router();

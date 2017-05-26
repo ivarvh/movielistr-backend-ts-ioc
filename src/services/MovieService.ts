@@ -6,9 +6,7 @@ import DirectorService from "./DirectorService";
 @Singleton
 export default class MovieService {
 
-    constructor(
-        @Inject private movieRepository: MovieRepository,
-    ) { }
+    constructor( @Inject private movieRepository: MovieRepository) { }
 
     public async findById(id: number): Promise<Movie> {
         return this.movieRepository.findMovieById(id);

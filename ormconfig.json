@@ -10,8 +10,7 @@
             "database": "movielistr"
         },
         "entities": [
-            "./models/*.js"
-        ],
-        "autoSchemaSync": true
+            "dist/models/**/*.js"
+        ]
     }
 ]

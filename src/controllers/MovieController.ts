@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import { IMiddleware, IRouterContext } from "koa-router";
-import { Inject, Singleton } from "typescript-ioc";
+import { Container, Inject, Singleton } from "typescript-ioc";
 import Movie from "../models/Movie";
 import MovieService from "../services/MovieService";
 

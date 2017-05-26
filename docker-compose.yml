@@ -1,0 +1,11 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=movielistr

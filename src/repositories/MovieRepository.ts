@@ -1,7 +1,9 @@
+import { Singleton } from "typescript-ioc";
 import EntityNotFoundError from "../exceptions/EntityNotFoundError";
 import Movie from "../models/Movie";
 import IRepository from "./IRepository";
 
+@Singleton
 export default class MovieRepository extends IRepository {
 
     public async getAllMovies(): Promise<Movie[]> {

@@ -1,5 +1,6 @@
 node_modules/
 dist/
 .ts-node/
+db-data/
 yarn.lock
 yarn-error.lock
