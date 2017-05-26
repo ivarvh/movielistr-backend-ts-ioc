@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import Director from "./Director";
 
 @Entity()
@@ -16,7 +16,8 @@ export default class Movie {
     private rating: number = 0;
     @Column()
     private seen: boolean = false;
-    @Column()
+    @OneToOne((type) => Director)
+    @JoinColumn()
     private director: Director;
 
     public static newMovie(id: string, title: string, releaseYear: number, duration: number, director: Director, rating: number, seen: boolean) {
