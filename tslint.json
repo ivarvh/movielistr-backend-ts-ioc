@@ -7,6 +7,13 @@
     "rules": {
         "max-line-length": [
             150
+        ],
+        "member-ordering": [
+            false
+        ],
+        "object-literal-sort-keys": false,
+        "no-console": [
+            false
         ]
     },
     "rulesDirectory": []

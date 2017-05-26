@@ -1,20 +1,18 @@
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity()
 export default class Director {
 
-    private id: string;
+    @PrimaryGeneratedColumn()
+    private id: number;
+    @Column()
     private firstName: string;
+    @Column()
     private lastName: string;
+    @Column()
     private birthYear: number;
 
-    public static newDirector(id: string, firstName: string, lastName: string, birthYear: number) {
-        const newDirector = new Director();
-        newDirector.id = id;
-        newDirector.firstName = firstName;
-        newDirector.lastName = lastName;
-        newDirector.birthYear = birthYear;
-        return newDirector;
-    }
-
-    public get $id(): string {
+    public get $id(): number {
         return this.id;
     }
 
@@ -42,5 +40,12 @@ export default class Director {
         this.birthYear = value;
     }
 
+    public static newDirector(firstName: string, lastName: string, birthYear: number) {
+        const newDirector = new Director();
+        newDirector.firstName = firstName;
+        newDirector.lastName = lastName;
+        newDirector.birthYear = birthYear;
+        return newDirector;
+    }
 
 }

@@ -32,7 +32,6 @@
     "ts-loader": "^2.0.3",
     "ts-mockito": "^2.0.0",
     "ts-node": "^3.0.4",
-    "typemoq": "^1.6.0",
     "typescript": "^2.3.2",
     "webpack": "^2.5.1"
   },
@@ -41,7 +40,8 @@
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.1.1",
-    "ts-mox": "^1.0.0",
+    "reflect-metadata": "^0.1.10",
+    "typeorm": "^0.0.11",
     "typescript-ioc": "^0.4.1"
   }
 }

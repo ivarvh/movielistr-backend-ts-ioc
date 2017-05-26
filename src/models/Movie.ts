@@ -1,16 +1,23 @@
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import Director from "./Director";
 
+@Entity()
 export default class Movie {
 
+    @PrimaryGeneratedColumn()
     private id: string;
+    @Column()
     private title: string;
+    @Column()
     private releaseYear: number;
+    @Column()
     private duration: number;
+    @Column()
     private rating: number = 0;
+    @Column()
     private seen: boolean = false;
+    @Column()
     private director: Director;
-
-    constructor() { }
 
     public static newMovie(id: string, title: string, releaseYear: number, duration: number, director: Director, rating: number, seen: boolean) {
         const movie = new Movie();
