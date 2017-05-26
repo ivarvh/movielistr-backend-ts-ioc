@@ -15,23 +15,22 @@ export default class MovieListr {
         @Inject private movieRoutes: MovieRoutes,
         @Inject private directorRoutes: DirectorRoutes) { }
 
-    public start() {
-        createConnection().then(async (connection) => {
+    public async start() {
+        await createConnection();
 
-            const app = new Koa();
-            const router = new Router();
+        const app = new Koa();
+        const router = new Router();
 
-            this.movieRoutes.register(router);
-            this.directorRoutes.register(router);
+        this.movieRoutes.register(router);
+        this.directorRoutes.register(router);
 
-            app.use(bodyParser());
-            app.use(router.routes());
-            app.use(router.allowedMethods());
+        app.use(bodyParser());
+        app.use(router.routes());
+        app.use(router.allowedMethods());
 
-            console.log("Started listening on port 3000...");
-            app.listen(3000);
+        console.log("Started listening on port 3000...");
+        app.listen(3000);
 
-        });
     }
 
 }

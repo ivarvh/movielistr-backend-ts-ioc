@@ -9,10 +9,6 @@ export default class DirectorController {
 
     constructor( @Inject private directorService: DirectorService) { }
 
-    public getDirectorMessage(ctx: IRouterContext) {
-        ctx.body = this.directorService.getDirectorMessage();
-    }
-
     public async getAllDirectors(ctx: IRouterContext) {
         ctx.body = await this.directorService.findAll();
     }
