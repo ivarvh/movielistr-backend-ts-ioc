@@ -23,4 +23,8 @@ export default class DirectorService {
     public async deleteDirector(directorId: number) {
         return this.directorRepository.deleteDirectorWithId(directorId);
     }
+
+    public getDirectorMessage(): string {
+        return "Climb the highest mountain, spit in the face of God.";
+    }
 }

@@ -1,11 +1,12 @@
-import { IMiddleware } from 'koa-router';
+import { IRouterContext } from "koa-router";
+
 export default class Route {
 
     private path: string;
     private method: string;
-    private action: IMiddleware;
+    private action: (ctx: IRouterContext) => void;
 
-    public static newRoute(path: string, method: string, action: IMiddleware) {
+    public static newRoute(path: string, method: string, action: (ctx: IRouterContext) => void) {
         const route = new Route();
         route.path = path;
         route.method = method;
@@ -21,7 +22,7 @@ export default class Route {
         return this.method;
     }
 
-    public get $action(): IMiddleware {
+    public get $action(): (ctx: IRouterContext) => void {
         return this.action;
     }
 }

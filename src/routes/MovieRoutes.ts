@@ -1,16 +1,22 @@
-import { Container } from "typescript-ioc";
+import { IRouterContext } from "koa-router";
+import { Container, Inject } from "typescript-ioc";
 import MovieController from "../controllers/MovieController";
 import Route from "../models/Route";
+import IRoutes from "./IRoutes";
 
-const movieRoutes = () => {
-    const movieController: MovieController = Container.get(MovieController);
-    return [
-        Route.newRoute("/movies", "get", movieController.getAllMovies),
-        Route.newRoute("/movies/:id", "get", movieController.findMovieById),
-        Route.newRoute("/movies", "post", movieController.saveMovie),
-        Route.newRoute("/movies/:id", "put", movieController.saveMovie),
-        Route.newRoute("/movies/:id", "delete", movieController.deleteMovie),
-    ];
-};
+export default class MovieRoutes extends IRoutes {
 
-export default movieRoutes;
+    constructor( @Inject private movieController: MovieController) {
+        super();
+    }
+
+    protected getRoutes(): Route[] {
+        return [
+            Route.newRoute("/movies", "get", (ctx: IRouterContext) => this.movieController.getAllMovies(ctx)),
+            Route.newRoute("/movies/:id", "get", (ctx: IRouterContext) => this.movieController.findMovieById(ctx)),
+            Route.newRoute("/movies", "post", (ctx: IRouterContext) => this.movieController.saveMovie(ctx)),
+            Route.newRoute("/movies/:id", "put", (ctx: IRouterContext) => this.movieController.saveMovie(ctx)),
+            Route.newRoute("/movies/:id", "delete", (ctx: IRouterContext) => this.movieController.deleteMovie(ctx)),
+        ];
+    }
+}

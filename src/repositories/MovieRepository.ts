@@ -1,5 +1,6 @@
 import { Singleton } from "typescript-ioc";
 import EntityNotFoundError from "../exceptions/EntityNotFoundError";
+import Director from "../models/Director";
 import Movie from "../models/Movie";
 import IRepository from "./IRepository";
 
@@ -7,11 +8,23 @@ import IRepository from "./IRepository";
 export default class MovieRepository extends IRepository {
 
     public async getAllMovies(): Promise<Movie[]> {
-        return this.getMovieRepository().find();
+        return this.getMovieRepository()
+            .find({
+                alias: "movie",
+                leftJoinAndSelect: {
+                    director: "movie.director",
+                },
+            });
     }
 
     public async findMovieById(id: number): Promise<Movie> {
-        const result = await this.getMovieRepository().findOneById(id);
+        const result = await this.getMovieRepository()
+            .findOneById(id, {
+                alias: "movie",
+                leftJoinAndSelect: {
+                    director: "movie.director",
+                },
+            });
         if (!result) {
             throw new EntityNotFoundError();
         }

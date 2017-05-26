@@ -6,17 +6,23 @@ export default class Movie {
 
     @PrimaryGeneratedColumn()
     private id: string;
+
     @Column()
     private title: string;
+
     @Column()
     private releaseYear: number;
+
     @Column()
     private duration: number;
+
     @Column()
     private rating: number = 0;
+
     @Column()
     private seen: boolean = false;
-    @OneToOne((type) => Director)
+
+    @OneToOne((type) => Director, { cascadeAll: true })
     @JoinColumn()
     private director: Director;
 

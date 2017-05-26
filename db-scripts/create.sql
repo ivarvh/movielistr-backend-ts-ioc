@@ -16,6 +16,6 @@ CREATE TABLE movie (
     duration int not null,
     rating int not null,
     seen boolean not null,
-    directorId int not null,
+    director int not null,
     FOREIGN KEY (directorId) REFERENCES director(id)
 );

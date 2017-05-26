@@ -1,16 +1,23 @@
-import { Container } from "typescript-ioc";
+import { IMiddleware, IRouterContext } from "koa-router";
+import { Container, Inject } from "typescript-ioc";
 import DirectorController from "../controllers/DirectorController";
 import Route from "../models/Route";
+import IRoutes from "./IRoutes";
 
-const directorRoutes = () => {
-    const directorController: DirectorController = Container.get(DirectorController);
-    return [
-        Route.newRoute("/directors", "get", directorController.getAllDirectors),
-        Route.newRoute("/directors/:id", "get", directorController.findDirectorById),
-        Route.newRoute("/directors/:id", "delete", directorController.deleteDirector),
-        Route.newRoute("/directors/", "post", directorController.saveDirector),
-        Route.newRoute("/directors/:id", "put", directorController.saveDirector),
-    ];
-};
+export default class DirectorRoutes extends IRoutes {
 
-export default directorRoutes;
+    constructor( @Inject private directorController: DirectorController) {
+        super();
+    }
+
+    protected getRoutes(): Route[] {
+        return [
+            Route.newRoute("/directors", "get", (ctx: IRouterContext) => this.directorController.getAllDirectors(ctx)),
+            Route.newRoute("/directors/:id", "get", (ctx: IRouterContext) => this.directorController.findDirectorById(ctx)),
+            Route.newRoute("/directors/", "post", (ctx: IRouterContext) => this.directorController.saveDirector(ctx)),
+            Route.newRoute("/directors/:id", "put", (ctx: IRouterContext) => this.directorController.saveDirector(ctx)),
+            Route.newRoute("/directors/:id", "delete", (ctx: IRouterContext) => this.directorController.deleteDirector(ctx)),
+        ];
+    }
+
+}
