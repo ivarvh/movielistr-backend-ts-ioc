@@ -4,7 +4,7 @@
   "description": "A program to keep a diary of movies you watched.",
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
-    "build": "webpack --config ./webpack/dev.webpack.config.js"
+    "build": "tsc"
   },
   "keywords": [
     "movielistr",
