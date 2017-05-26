@@ -1,21 +1,34 @@
-import { Inject, Singleton } from 'typescript-ioc';
-import { Context } from 'koa';
-import { IRouterContext, IMiddleware } from 'koa-router';
+import { Context } from "koa";
+import { IMiddleware, IRouterContext } from "koa-router";
+import { Inject, Singleton } from "typescript-ioc";
+import Director from "../models/Director";
 import DirectorService from "../services/DirectorService";
 
 @Singleton
 export default class DirectorController {
 
-    @Inject
-    private directorService: DirectorService;
+    constructor( @Inject private directorService: DirectorService) { }
 
-    constructor() { }
-
-    public getAllDirectors: IMiddleware = (ctx: IRouterContext, next: () => Promise<any>) => {
-        ctx.body = this.directorService.findAll();
+    public async getAllDirectors(ctx: IRouterContext) {
+        ctx.body = await this.directorService.findAll();
     }
 
-    public findDirectorById: IMiddleware = (ctx: IRouterContext, next: () => Promise<any>) => {
-        this.directorService.findById(ctx.params.id);
+    public async findDirectorById(ctx: IRouterContext) {
+        try {
+            ctx.body = await this.directorService.findById(ctx.params.id);
+        } catch (e) {
+            ctx.throw(404);
+        }
+    }
+
+    public async saveDirector(ctx: IRouterContext) {
+        const director: Director = ctx.request.body;
+        return this.directorService.save(director);
+    }
+
+    public async deleteDirector(ctx: IRouterContext) {
+        const directorId = ctx.params.id;
+        await this.directorService.deleteDirector(directorId);
+        ctx.status = 200;
     }
 }

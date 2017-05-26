@@ -1,53 +1,28 @@
-import Director from "src/models/Director";
 import { Inject, Singleton } from "typescript-ioc";
 import Movie from "../models/Movie";
-import IDUtils from "./../utils/IDUtils";
+import MovieRepository from "../repositories/MovieRepository";
 import DirectorService from "./DirectorService";
 
 @Singleton
 export default class MovieService {
 
-    private movies: Movie[] = [];
-
     constructor(
-        @Inject private directorService: DirectorService,
-        @Inject private idUtils: IDUtils,
+        @Inject private movieRepository: MovieRepository,
     ) { }
 
-    public addMovie(title: string, duration: number, releaseYear: number, directorId: string, rating: number, seen: boolean): Movie {
-        const director = this.directorService.findById(directorId);
-        const newMovie = Movie.newMovie(
-            this.idUtils.generateUniqueId(), title, releaseYear, duration, director, rating, seen,
-        );
-
-        this.movies.push(newMovie);
-
-        return newMovie;
+    public async findById(id: number): Promise<Movie> {
+        return this.movieRepository.findMovieById(id);
     }
 
-    public updateMovie(id: string, title: string, duration: number, releaseYear: number, directorId: string, rating: number, seen: boolean) {
-        const currentValue: Movie = this.findById(id);
-        currentValue.$title = title;
-        currentValue.$duration = duration;
-        currentValue.$releaseYear = releaseYear;
-        if (currentValue.$director.$id !== directorId) {
-            currentValue.$director = this.directorService.findById(directorId);
-        }
-        currentValue.$rating = rating;
-        currentValue.$seen = seen;
-        return currentValue;
+    public async findAll(): Promise<Movie[]> {
+        return this.movieRepository.getAllMovies();
     }
 
-    public findById(id: string): Movie {
-        const foundMovie = this.movies.find((movie) => movie.$id === id);
-        if (!foundMovie) {
-            throw new Error("No movie found with ID");
-        }
-        return foundMovie;
+    public async saveMovie(movie: Movie): Promise<Movie> {
+        return this.movieRepository.saveMovie(movie);
     }
 
-    public findAll(): Movie[] {
-        return this.movies;
+    public async deleteMovie(movieId: number): Promise<void> {
+        return this.movieRepository.deleteMovie(movieId);
     }
-
 }

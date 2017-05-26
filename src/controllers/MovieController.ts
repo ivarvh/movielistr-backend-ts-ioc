@@ -1,38 +1,34 @@
 import { Context } from "koa";
 import { IMiddleware, IRouterContext } from "koa-router";
 import { Inject, Singleton } from "typescript-ioc";
+import Movie from "../models/Movie";
 import MovieService from "../services/MovieService";
-
-interface IMovieRequest {
-    title: string;
-    duration: number;
-    releaseYear: number;
-    directorId: string;
-    rating: number;
-    seen: boolean;
-}
 
 @Singleton
 export default class MovieController {
 
     constructor( @Inject private movieService: MovieService) { }
 
-    public getAllMovies: IMiddleware = (ctx: Context) => {
-        const movies = this.movieService.findAll();
-        ctx.body = movies;
+    public async getAllMovies(ctx: Context) {
+        ctx.body = await this.movieService.findAll();
     }
 
-    public findMovieById: IMiddleware = (ctx: Context) => {
+    public async findMovieById(ctx: Context) {
         try {
-            ctx.body = this.movieService.findById(ctx.params.id);
+            ctx.body = await this.movieService.findById(ctx.params.id);
         } catch (e) {
-            ctx.throw(404, "No movie found with this ID.");
+            ctx.throw(404);
         }
     }
 
-    public addMovie: IMiddleware = (ctx: Context) => {
-        const body: IMovieRequest = ctx.request.body;
-        const newMovie = this.movieService.addMovie(body.title, body.duration, body.releaseYear, body.directorId, body.rating, body.seen);
-        ctx.body = newMovie;
+    public async saveMovie(ctx: Context) {
+        const movie: Movie = ctx.request.body;
+        const result = await this.movieService.saveMovie(movie);
+        ctx.body = result;
+    }
+
+    public async deleteMovie(ctx: Context) {
+        await this.movieService.deleteMovie(ctx.params.id);
+        ctx.status = 200;
     }
 }
