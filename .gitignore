@@ -6,3 +6,4 @@ db-data/*
 yarn.lock
 yarn-error.lock
 yarn-error.log
+.vscode/settings.json
