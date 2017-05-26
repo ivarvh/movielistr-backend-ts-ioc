@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .ts-node/
-db-data/
+db-data/*
+!db-data/.gitkeep
 yarn.lock
 yarn-error.lock
