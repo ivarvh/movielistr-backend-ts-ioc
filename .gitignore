@@ -5,3 +5,4 @@ db-data/*
 !db-data/.gitkeep
 yarn.lock
 yarn-error.lock
+yarn-error.log
