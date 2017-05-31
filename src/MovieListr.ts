@@ -1,5 +1,6 @@
 import * as Koa from "koa";
 import * as bodyParser from "koa-bodyparser";
+import * as logger from "koa-logger";
 import * as Router from "koa-router";
 
 import { createConnection } from "typeorm";
@@ -39,6 +40,7 @@ export default class MovieListr {
         this.movieRoutes.register(router);
         this.directorRoutes.register(router);
 
+        app.use(logger());
         app.use(bodyParser());
         app.use(router.routes());
         app.use(router.allowedMethods());
