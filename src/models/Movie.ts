@@ -26,14 +26,15 @@ export default class Movie {
     @JoinColumn()
     private director: Director;
 
-    public static newMovie(title: string, releaseYear: number, duration: number, director: Director, rating: number, seen: boolean) {
+    public static newMovie(obj: { id?: number, title?: string, releaseYear?: number, duration?: number, director?: object, rating?: number, seen?: boolean }): Movie {
         const movie = new Movie();
-        movie.title = title;
-        movie.releaseYear = releaseYear;
-        movie.duration = duration;
-        movie.director = director;
-        movie.rating = rating;
-        movie.seen = seen;
+        if (obj.id) movie.id = obj.id;
+        if (obj.title) movie.title = obj.title;
+        if (obj.releaseYear) movie.releaseYear = obj.releaseYear;
+        if (obj.duration) movie.duration = obj.duration;
+        if (obj.director) movie.director = Director.newDirector(obj.director);
+        if (obj.rating) movie.rating = obj.rating;
+        if (obj.seen) movie.seen = obj.seen;
         return movie;
     }
 

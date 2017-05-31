@@ -44,11 +44,12 @@ export default class Director {
         this.birthYear = value;
     }
 
-    public static newDirector(firstName: string, lastName: string, birthYear: number) {
+    public static newDirector(obj: { id?: number, firstName?: string, lastName?: string, birthYear?: number }) {
         const newDirector = new Director();
-        newDirector.firstName = firstName;
-        newDirector.lastName = lastName;
-        newDirector.birthYear = birthYear;
+        if (obj.id) newDirector.id = obj.id;
+        if (obj.firstName) newDirector.firstName = obj.firstName;
+        if (obj.lastName) newDirector.lastName = obj.lastName;
+        if (obj.birthYear) newDirector.birthYear = obj.birthYear;
         return newDirector;
     }
 

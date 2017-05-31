@@ -15,7 +15,7 @@ export default class MovieRoutes extends IRoutes {
             Route.newRoute("/movies", "get", (ctx: IRouterContext) => this.movieController.getAllMovies(ctx)),
             Route.newRoute("/movies/:id", "get", (ctx: IRouterContext) => this.movieController.findMovieById(ctx)),
             Route.newRoute("/movies", "post", (ctx: IRouterContext) => this.movieController.saveMovie(ctx)),
-            Route.newRoute("/movies/:id", "put", (ctx: IRouterContext) => this.movieController.saveMovie(ctx)),
+            Route.newRoute("/movies/:id", "put", (ctx: IRouterContext) => this.movieController.updateMovie(ctx)),
             Route.newRoute("/movies/:id", "delete", (ctx: IRouterContext) => this.movieController.deleteMovie(ctx)),
         ];
     }

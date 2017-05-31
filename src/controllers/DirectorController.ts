@@ -22,8 +22,25 @@ export default class DirectorController {
     }
 
     public async saveDirector(ctx: IRouterContext) {
-        const director: Director = ctx.request.body;
-        return this.directorService.save(director);
+        try {
+            const director: Director = Director.newDirector(ctx.request.body);
+            const result = await this.directorService.save(director);
+            ctx.body = result;
+        } catch (e) {
+            ctx.throw(400, e.message);
+        }
+    }
+
+    public async updateDirector(ctx: IRouterContext) {
+        try {
+            const director: Director = Director.newDirector(ctx.request.body);
+            if (String(ctx.params.id) !== String(director.$id)) {
+                ctx.throw(400);
+            }
+            const result = await this.directorService.update(director);
+        } catch (e) {
+            ctx.throw(400, e.message);
+        }
     }
 
     public async deleteDirector(ctx: IRouterContext) {

@@ -17,7 +17,8 @@
         ],
         "no-unused-variable": [
             true
-        ]
+        ],
+        "curly": false
     },
     "rulesDirectory": []
 }

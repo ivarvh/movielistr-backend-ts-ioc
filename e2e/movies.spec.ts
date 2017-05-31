@@ -15,6 +15,21 @@ describe("E2E: Movie Actions", () => {
 
     let app: Server;
 
+    const title: string = "Spongebob Squarepants Movie";
+    const rating = 7;
+    const duration = 84;
+    const releaseYear = 2008;
+    const seen = true;
+    const directorId = 3;
+    const directorFirstName = "John";
+    const directorLastName = "Lasseter";
+    const directorBirthYear = 1957;
+    const director = () => DirectorTestBuilder.newDirector()
+        .withId(3)
+        .withFirstName(directorFirstName)
+        .withLastName(directorLastName)
+        .withBirthYear(directorBirthYear);
+
     before(async () => {
         const movielistr: MovieListr = Container.get(MovieListr);
         app = await movielistr.start();
@@ -70,22 +85,141 @@ describe("E2E: Movie Actions", () => {
                 .accept("json")
                 .send(MovieTestBuilder
                     .newMovie()
-                    .withTitle("Spongebob Squarepants Movie")
-                    .withRating(7)
-                    .withDuration(84)
-                    .withReleaseYear(2008)
-                    .withSeen(true)
-                    .withDirector(DirectorTestBuilder.newDirector()
-                        .withId(3)
-                        .withFirstName("John")
-                        .withLastName("Lasseter")
-                        .withBirthYear(1957)
-                        .build())
+                    .withTitle(title)
+                    .withRating(rating)
+                    .withDuration(duration)
+                    .withReleaseYear(releaseYear)
+                    .withSeen(seen)
+                    .withDirector(director().build())
                     .build(),
             ).expect(200);
 
             const result = response.body;
             expect(result.id).is.greaterThan(0);
+        });
+
+        it("should return 400 if the director does not exist yet", async () => {
+            await agent(app)
+                .post("/movies")
+                .accept("json")
+                .send(MovieTestBuilder
+                    .newMovie()
+                    .withTitle(title)
+                    .withRating(rating)
+                    .withDuration(duration)
+                    .withReleaseYear(releaseYear)
+                    .withSeen(seen)
+                    .withDirector(director().withId(999).build())
+                    .build(),
+            ).expect(400);
+        });
+    });
+
+    describe("PUT /movies/:id", () => {
+
+        it("should update the movie with given ID", async () => {
+            const movieResponse = await agent(app)
+                .get("/movies")
+                .accept("json")
+                .expect(200);
+            const allMovies = movieResponse.body;
+            const movieId = allMovies[0].id;
+
+            const response = await agent(app)
+                .put(`/movies/${movieId}`)
+                .accept("json")
+                .send(MovieTestBuilder
+                    .newMovie()
+                    .withId(movieId)
+                    .withTitle(title)
+                    .withRating(rating)
+                    .withDuration(duration)
+                    .withReleaseYear(releaseYear)
+                    .withSeen(seen)
+                    .withDirector(director().build())
+                    .build(),
+            ).expect(200);
+
+            const result = response.body;
+            expect(result.id).to.equal(1);
+            expect(result.title).to.equal(title);
+            expect(result.rating).to.equal(rating);
+            expect(result.duration).to.equal(duration);
+            expect(result.releaseYear).to.equal(releaseYear);
+            expect(result.seen).to.equal(seen);
+            expect(result.director.id).to.equal(directorId);
+            expect(result.director.firstName).to.equal(directorFirstName);
+            expect(result.director.lastName).to.equal(directorLastName);
+            expect(result.director.birthYear).to.equal(directorBirthYear);
+        });
+
+        it("should return 400 if the movie does not exist yet", async () => {
+            await agent(app)
+                .put("/movies/99")
+                .accept("json")
+                .send(MovieTestBuilder
+                    .newMovie()
+                    .withId(99)
+                    .withTitle(title)
+                    .withRating(rating)
+                    .withDuration(duration)
+                    .withReleaseYear(releaseYear)
+                    .withSeen(seen)
+                    .withDirector(director().build())
+                    .build(),
+            ).expect(400);
+        });
+
+        it("should return 400 if the id of the request object does not match the url id", async () => {
+            await agent(app)
+                .put("/movies/10")
+                .accept("json")
+                .send(MovieTestBuilder
+                    .newMovie()
+                    .withId(5)
+                    .withTitle(title)
+                    .withRating(rating)
+                    .withDuration(duration)
+                    .withReleaseYear(releaseYear)
+                    .withSeen(seen)
+                    .withDirector(director().build())
+                    .build(),
+            ).expect(400);
+        });
+    });
+
+    describe("DELETE /movies/:id", () => {
+
+        it("should delete the movie with the given type", async () => {
+            const movieResponse = await agent(app)
+                .get("/movies")
+                .accept("json")
+                .expect(200);
+            const currentMovies = movieResponse.body;
+            const movieId = currentMovies[0].id;
+
+            await agent(app)
+                .delete(`/movies/${movieId}`)
+                .accept("json")
+                .expect(200);
+
+            const response = await agent(app)
+                .get("/movies")
+                .accept("json")
+                .expect(200);
+
+            const allMovies: Movie[] = response.body;
+
+            allMovies.forEach((element) => {
+                expect(element.$id).not.to.equal(movieId);
+            });
+        });
+
+        it("should return a 404 if the movie does not exist (anymore)", async () => {
+            await agent(app)
+                .delete("/movies/999")
+                .accept("json")
+                .expect(404);
         });
 
     });

@@ -56,7 +56,7 @@ describe("MovieService", () => {
 
         it("should save the given movie", async () => {
             when(movieRepository.saveMovie(moviewithoutId)).thenReturn(Promise.resolve(moviewithId));
-            const actual = await serviceUnderTest.saveMovie(moviewithoutId);
+            const actual = await serviceUnderTest.save(moviewithoutId);
             expect(actual).to.equal(moviewithId);
         });
 
@@ -66,7 +66,7 @@ describe("MovieService", () => {
 
         it("should delete the given movie", async () => {
             when(movieRepository.deleteMovie(movieId)).thenReturn(Promise.resolve());
-            const actual = await serviceUnderTest.deleteMovie(movieId);
+            const actual = await serviceUnderTest.delete(movieId);
             verify(movieRepository.deleteMovie(movieId)).called();
         });
 

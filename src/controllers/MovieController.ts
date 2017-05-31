@@ -20,14 +20,34 @@ export default class MovieController {
         }
     }
 
+    public async updateMovie(ctx: IRouterContext) {
+        try {
+            const movie: Movie = Movie.newMovie(ctx.request.body);
+            if (String(ctx.params.id) !== String(movie.$id)) {
+                ctx.throw(400);
+            }
+            ctx.body = await this.movieService.update(movie);
+        } catch (e) {
+            ctx.throw(400, e.message);
+        }
+    }
+
     public async saveMovie(ctx: IRouterContext) {
-        const movie: Movie = ctx.request.body;
-        const result = await this.movieService.saveMovie(movie);
-        ctx.body = result;
+        try {
+            const movie: Movie = Movie.newMovie(ctx.request.body);
+            const result = await this.movieService.save(movie);
+            ctx.body = result;
+        } catch (e) {
+            ctx.throw(400, e.message);
+        }
     }
 
     public async deleteMovie(ctx: IRouterContext) {
-        await this.movieService.deleteMovie(ctx.params.id);
-        ctx.status = 200;
+        try {
+            await this.movieService.delete(ctx.params.id);
+            ctx.status = 200;
+        } catch (e) {
+            ctx.throw(404, e.message);
+        }
     }
 }

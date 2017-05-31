@@ -1,4 +1,5 @@
 import { Singleton } from "typescript-ioc";
+import BadRequestEntity from "../exceptions/BadRequestEntity";
 import EntityNotFoundError from "../exceptions/EntityNotFoundError";
 import Director from "../models/Director";
 import Movie from "../models/Movie";
@@ -32,10 +33,18 @@ export default class MovieRepository extends IRepository {
     }
 
     public async saveMovie(movie: Movie): Promise<Movie> {
+        const director = await this.getDirectorRepository().findOneById(movie.$director.$id);
+        if (!director) {
+            throw new BadRequestEntity("No director found for this ID: " + movie.$director.$id);
+        }
         return this.getMovieRepository().persist(movie);
     }
 
     public async deleteMovie(id: number): Promise<void> {
+        const movie = await this.getMovieRepository().findOneById(id);
+        if (!movie) {
+            throw new EntityNotFoundError("No movie found with this ID");
+        }
         await this.getMovieRepository()
             .createQueryBuilder("movie")
             .delete()

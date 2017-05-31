@@ -3,7 +3,7 @@ import { Context } from "koa";
 import { IRouterContext } from "koa-router";
 import "mocha";
 import * as sinon from "sinon";
-import { instance, mock, verify, when } from "ts-mockito";
+import { anything, capture, instance, mock, verify, when } from "ts-mockito";
 import MovieController from "../../src/controllers/MovieController";
 import Director from "../../src/models/Director";
 import Movie from "../../src/models/Movie";
@@ -71,12 +71,38 @@ describe("MovieController", () => {
 
         it("delegates to movieService and responds with 200", async () => {
             const ctx: Context = { request: {} } as Context;
-            ctx.request.body = movieWithoutId;
+            const requestBody = {
+                title: movieWithoutId.$title,
+                releaseYear: movieWithoutId.$releaseYear,
+                duration: movieWithoutId.$duration,
+                rating: movieWithoutId.$rating,
+                seen: movieWithoutId.$seen,
+                director: {
+                    id: movieWithoutId.$director.$id,
+                    firstName: movieWithoutId.$director.$firstName,
+                    lastName: movieWithoutId.$director.$lastName,
+                    birthYear: movieWithoutId.$director.$birthYear,
+                },
+            };
+            ctx.request.body = requestBody;
 
-            when(movieService.saveMovie(movieWithoutId))
+            when(movieService.save(anything()))
                 .thenReturn(Promise.resolve(movieWithId));
 
             await controllerUnderTest.saveMovie(ctx);
+
+            const [firstArg] = capture(movieService.save).last();
+            console.log(JSON.stringify(firstArg));
+            expect(firstArg.$id).equals(undefined);
+            expect(firstArg.$title).equals(requestBody.title);
+            expect(firstArg.$releaseYear).equals(requestBody.releaseYear);
+            expect(firstArg.$duration).equals(requestBody.duration);
+            expect(firstArg.$rating).equals(requestBody.rating);
+            expect(firstArg.$seen).equals(requestBody.seen);
+            expect(firstArg.$director.$id).equals(requestBody.director.id);
+            expect(firstArg.$director.$firstName).equals(requestBody.director.firstName);
+            expect(firstArg.$director.$lastName).equals(requestBody.director.lastName);
+            expect(firstArg.$director.$birthYear).equals(requestBody.director.birthYear);
 
             expect(ctx.body).to.equal(movieWithId);
         });
