@@ -4,6 +4,7 @@
     "target": "es6", /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */
     "module": "commonjs", /* Specify module code generation: 'commonjs', 'amd', 'system', 'umd' or 'es2015'. */
     "lib": [
+      "dom",
       "es5",
       "es6",
       "esnext.asynciterable"
@@ -53,6 +54,7 @@
   },
   "exclude": [
     "node_modules",
-    "test"
+    "test",
+    "e2e"
   ]
 }

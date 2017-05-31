@@ -4,6 +4,9 @@
   "description": "A program to keep a diary of movies you watched.",
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
+    "pree2e": "node scripts/start-test-db.js",
+    "e2e": "node scripts/run-e2e.js",
+    "poste2e": "node scripts/stop-test-db.js",
     "build": "tsc --rootDir ./src/"
   },
   "keywords": [
@@ -23,11 +26,14 @@
     "@types/node": "^7.0.18",
     "@types/sinon": "^2.2.2",
     "@types/sinon-chai": "^2.7.27",
+    "@types/supertest": "^2.0.0",
     "chai": "^3.5.0",
     "mocha": "^3.4.1",
+    "shelljs": "^0.7.7",
     "sinon": "^2.2.0",
     "sinon-chai": "^2.10.0",
     "source-map-loader": "^0.2.1",
+    "supertest": "^3.0.0",
     "ts-loader": "^2.0.3",
     "ts-mockito": "^2.0.0",
     "ts-node": "^3.0.4",

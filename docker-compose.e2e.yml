@@ -1,11 +1,12 @@
 version: '3'
 services:
-  db:
-    image: mysql:latest
+  dbtest:
+    image: healthcheck/mysql:latest
+    container_name: dbtest
     ports:
       - 3306:3306
     volumes:
-      - ./db-data:/var/lib/mysql
+      - ./db-scripts:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=movielistr

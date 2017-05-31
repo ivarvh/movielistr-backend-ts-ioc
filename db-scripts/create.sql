@@ -1,7 +1,3 @@
-CREATE DATABASE movielistr;
-
-USE movielistr;
-
 CREATE TABLE director (
 	id int auto_increment not null primary key,
     firstName varchar(255) not null,
@@ -17,5 +13,5 @@ CREATE TABLE movie (
     rating int not null,
     seen boolean not null,
     director int not null,
-    FOREIGN KEY (directorId) REFERENCES director(id)
+    FOREIGN KEY (director) REFERENCES director(id)
 );

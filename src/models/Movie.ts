@@ -22,7 +22,7 @@ export default class Movie {
     @Column()
     private seen: boolean = false;
 
-    @OneToOne((type) => Director, { cascadeAll: true })
+    @OneToOne((type) => Director, { cascadeInsert: false, cascadeRemove: true, nullable: false })
     @JoinColumn()
     private director: Director;
 
