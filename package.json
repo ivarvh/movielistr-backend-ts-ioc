@@ -4,9 +4,9 @@
   "description": "A program to keep a diary of movies you watched.",
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
-    "pree2e": "node scripts/start-test-db.js",
-    "e2e": "node scripts/run-e2e.js",
-    "poste2e": "node scripts/stop-test-db.js",
+    "pree2e": "ts-node scripts/start-test-db.ts",
+    "e2e": "ts-node scripts/run-e2e.ts",
+    "poste2e": "ts-node scripts/stop-test-db.ts",
     "build": "tsc --rootDir ./src/"
   },
   "keywords": [
@@ -21,9 +21,11 @@
     "@types/chai": "^3.5.2",
     "@types/koa": "^2.0.39",
     "@types/koa-bodyparser": "^3.0.23",
+    "@types/koa-logger": "^2.0.2",
     "@types/koa-router": "^7.0.22",
     "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.18",
+    "@types/shelljs": "^0.7.1",
     "@types/sinon": "^2.2.2",
     "@types/sinon-chai": "^2.7.27",
     "@types/supertest": "^2.0.0",
@@ -32,15 +34,12 @@
     "shelljs": "^0.7.7",
     "sinon": "^2.2.0",
     "sinon-chai": "^2.10.0",
-    "source-map-loader": "^0.2.1",
     "supertest": "^3.0.0",
-    "ts-loader": "^2.0.3",
     "ts-mockito": "^2.0.0",
     "ts-node": "^3.0.4",
     "typescript": "^2.3.2"
   },
   "dependencies": {
-    "@types/koa-logger": "^2.0.2",
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
     "koa-logger": "^3.0.0",
