@@ -1,4 +1,4 @@
-import {exec} from "shelljs";
+import { exec } from "shelljs";
 
 const executeE2ETests = () => {
     console.log("Executing e2e tests...");
