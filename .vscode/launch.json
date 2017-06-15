@@ -6,13 +6,6 @@
     "configurations": [
         {
             "type": "node",
-            "request": "attach",
-            "name": "Attach to debugger",
-            "protocol": "inspector",
-            "port": 9229
-        },
-        {
-            "type": "node",
             "request": "launch",
             "name": "Debug Application",
             "runtimeExecutable": "npm",
@@ -27,6 +20,23 @@
             "protocol": "inspector",
             "sourceMaps": true,
             "port": 5858
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Tests",
+            "runtimeExecutable": "npm",
+            "windows": {
+                "runtimeExecutable": "npm.cmd"
+            },
+            "runtimeArgs": [
+                "run-script",
+                "test:debug"
+            ],
+            "outFiles": [],
+            "protocol": "inspector",
+            "sourceMaps": true,
+            "port": 9229
         }
     ]
 }
