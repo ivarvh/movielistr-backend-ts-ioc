@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "A program to keep a diary of movies you watched.",
   "scripts": {
+    "build": "tsc --rootDir ./src/",
+    "start": "ts-node src/index.ts",
+    "start:debug": "ts-node --inspect=5858 --debug-brk --ignore false src/index.ts",
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
+    "test:debug": "mocha --inspect --debug-brk --not-timeouts --compilers ts:ts-node/register test/**/*.spec.ts",
     "pree2e": "ts-node scripts/start-test-db.ts",
     "e2e": "ts-node scripts/run-e2e.ts",
-    "poste2e": "ts-node scripts/stop-test-db.ts",
-    "build": "tsc --rootDir ./src/"
+    "poste2e": "ts-node scripts/stop-test-db.ts"
   },
   "keywords": [
     "movielistr",
@@ -15,6 +18,16 @@
     "listr",
     "crud"
   ],
+  "dependencies": {
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-logger": "^3.0.0",
+    "koa-router": "^7.1.1",
+    "mysql": "^2.13.0",
+    "reflect-metadata": "^0.1.10",
+    "typeorm": "^0.0.11",
+    "typescript-ioc": "^0.4.1"
+  },
   "author": "Ivar van Hartingsveldt",
   "license": "ISC",
   "devDependencies": {
@@ -38,15 +51,5 @@
     "ts-mockito": "^2.0.0",
     "ts-node": "^3.0.4",
     "typescript": "^2.3.2"
-  },
-  "dependencies": {
-    "koa": "^2.2.0",
-    "koa-bodyparser": "^4.2.0",
-    "koa-logger": "^3.0.0",
-    "koa-router": "^7.1.1",
-    "mysql": "^2.13.0",
-    "reflect-metadata": "^0.1.10",
-    "typeorm": "^0.0.11",
-    "typescript-ioc": "^0.4.1"
   }
 }

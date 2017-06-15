@@ -7,40 +7,26 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Attach to Process",
+            "name": "Attach to debugger",
             "protocol": "inspector",
             "port": 9229
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceRoot}/src/index.ts",
-            "cwd": "${workspaceRoot}",
-            "outFiles": [
-                "${workspaceRoot}/dist/**/*.js"
-            ],
-            "sourceMaps": true
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Mocha Tests",
-            "cwd": "${workspaceRoot}",
-            "env": {
-                "TS_NODE_CACHE_DIRECTORY": "${workspaceRoot}/.ts-node"
+            "name": "Debug Application",
+            "runtimeExecutable": "npm",
+            "windows": {
+                "runtimeExecutable": "npm.cmd"
             },
-            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/mocha.cmd",
             "runtimeArgs": [
-                "-r",
-                "ts-node/register",
-                "${workspaceRoot}/test/*/*.spec.ts"
+                "run-script",
+                "start:debug"
             ],
+            "outFiles": [],
             "protocol": "inspector",
             "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/.ts-node/**"
-            ]
+            "port": 5858
         }
     ]
 }
